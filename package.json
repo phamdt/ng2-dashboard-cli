@@ -1,0 +1,16 @@
+{
+  "name": "generator-ng2-dashboard-generator",
+  "version": "0.1.0",
+  "description": "yeoman generators for creating ng2 dashboards and components",
+  "files": [
+    "app",
+    "router"
+  ],
+  "keywords": [
+    "yeoman-generator"
+  ],
+  "main": "app/index.js",
+  "dependencies": {
+    "yeoman-generator": "^1.0.0"
+  }
+}
