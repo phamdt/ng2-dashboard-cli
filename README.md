@@ -2,9 +2,9 @@
 > yeoman generators for creating Angular2 dashboards and components
 
 ## Usage
-Install `yo` and `angular-cli`
+Install `yo`,`angular-cli` and dashboard genertor `generator-ng2-dashboard-generator`
 ```
-npm install -g yo angular-cli
+npm install -g yo angular-cli generator-ng2-dashboard-generator
 ```
 
 Make a new directory, and `cd` into it:
