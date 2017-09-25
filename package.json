@@ -11,9 +11,9 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/angular/angular-cli.git"
+    "url": "https://github.com/dinesh36/ng2-dashboard-generator.git"
   },
-  "homepage": "https://github.com/angular/angular-cli",
+  "homepage": "https://github.com/dinesh36/ng2-dashboard-generator",
   "main": "app/index.js",
   "dependencies": {
     "underscore.string": "^3.3.4",
