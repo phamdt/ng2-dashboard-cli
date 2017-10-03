@@ -1,0 +1,13 @@
+<nb-card>
+	<nb-card-header>
+		<%=CrudsModuleName%>
+	</nb-card-header>
+
+	<nb-card-body>
+		<ng2-smart-table [settings]="settings" [source]="source"
+						 (deleteConfirm)="delete<%=CrudModuleName%>($event)"
+						 (createConfirm)="create<%=CrudModuleName%>($event)"
+						 (editConfirm)="update<%=CrudModuleName%>($event)">
+		</ng2-smart-table>
+	</nb-card-body>
+</nb-card>
