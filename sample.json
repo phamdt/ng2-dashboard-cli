@@ -1,0 +1,26 @@
+{
+  "request": {
+    "urlPath": "/some/resource/path",
+    "method": "ANY",
+    "headers": {
+      "Accept": {
+        "contains": "json"
+      }
+    }
+  },
+  "response": {
+    "status": 200,
+    "data": [{
+        "attribute1": 1,
+        "attribute2": 2
+      },
+      {
+        "attribute1": 1,
+        "attribute2": 2
+      }
+    ],
+    "metadata": {
+      "resource": "Resource Name"
+    }
+  }
+}

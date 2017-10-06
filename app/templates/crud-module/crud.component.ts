@@ -2,18 +2,18 @@ import { Component } from '@angular/core';
 import { LocalDataSource } from 'ng2-smart-table';
 
 import { SmartTableService } from '../../../@core/data/smart-table.service';
-import {<%=CrudModuleName%>Service} from "./<%=crudsModuleName%>.service";
+import {<%=ModuleNameSingular%>Service} from "./<%=moduleNameSingular%>.service";
 
 @Component({
 	selector: 'ngx-smart-table',
-	templateUrl: './<%=crudsModuleName%>.component.html',
+	templateUrl: './<%=moduleNameSingular%>.component.html',
 	styles: [`
     nb-card {
       transform: translate3d(0, 0, 0);
     }
   `],
 })
-export class <%=CrudsModuleName%>Component {
+export class <%=ModuleNameSingular%>Component {
 
 	settings = {
 		add: {
@@ -32,49 +32,28 @@ export class <%=CrudsModuleName%>Component {
 			deleteButtonContent: '<i class="nb-trash"></i>',
 			confirmDelete: true,
 		},
-		columns: {
-			firstName: {
-				title: 'First Name',
-				type: 'string',
-			},
-			lastName: {
-				title: 'Last Name',
-				type: 'string',
-			},
-			<%=crudModuleName%>Name: {
-				title: '<%=CrudModuleName%> Name',
-				type: 'string',
-			},
-			email: {
-				title: 'E-mail',
-				type: 'string',
-			},
-			age: {
-				title: 'Age',
-				type: 'number',
-			},
-		},
+		columns: <%-fields%>,
 	};
 
 	source: LocalDataSource = new LocalDataSource();
 
-	constructor(private service: SmartTableService,private <%=crudModuleName%>Service:<%=CrudModuleName%>Service) {
+	constructor(private service: SmartTableService,private <%=moduleNameSingular%>Service:<%=ModuleNameSingular%>Service) {
 		this.getData();
 	}
 
 	getData(){
-		this.<%=crudModuleName%>Service.get<%=CrudsModuleName%>()
-			.subscribe((<%=crudsModuleName%>)=>this.source.load(<%=crudsModuleName%>.rows))
+		this.<%=moduleNameSingular%>Service.get<%=ModuleNamePlural%>()
+			.subscribe((<%=moduleNamePlural%>)=>this.source.load(<%=moduleNamePlural%>.rows))
 	}
 
-	delete<%=CrudModuleName%>(event){
+	delete<%=ModuleNameSingular%>(event){
 		if (window.confirm('Are you sure you want to delete?')) {
-			this.<%=crudModuleName%>Service.delete<%=CrudModuleName%>(event.data.id)
+			this.<%=moduleNameSingular%>Service.delete<%=ModuleNameSingular%>(event.data.id)
 				.subscribe(()=>{
 					event.confirm.resolve();
 					this.getData();
 				},()=>{
-					alert('Error in deleting the <%=crudModuleName%>.');
+					alert('Error in deleting the <%=moduleNamePlural%>.');
 					event.confirm.reject()
 				})
 		} else {
@@ -82,24 +61,24 @@ export class <%=CrudsModuleName%>Component {
 		}
 	}
 
-	create<%=CrudModuleName%>(event){
-		this.<%=crudModuleName%>Service.create<%=CrudModuleName%>(event.newData)
+	create<%=ModuleNameSingular%>(event){
+		this.<%=moduleNameSingular%>Service.create<%=ModuleNameSingular%>(event.newData)
 			.subscribe(()=>{
 				event.confirm.resolve();
 				this.getData();
 			},()=>{
-				alert('Error in creating the <%=crudModuleName%>.');
+				alert('Error in creating the <%=moduleNamePlural%>.');
 				event.confirm.reject();
 			})
 	}
 
-	update<%=CrudModuleName%>(event){
-		this.<%=crudModuleName%>Service.update<%=CrudModuleName%>(event.newData)
+	update<%=ModuleNameSingular%>(event){
+		this.<%=moduleNameSingular%>Service.update<%=ModuleNameSingular%>(event.newData)
 			.subscribe(()=>{
 				event.confirm.resolve();
 				this.getData();
 			},()=>{
-				alert('Error in updating the <%=crudModuleName%>.');
+				alert('Error in updating the <%=moduleNamePlural%>.');
 				event.confirm.reject();
 			})
 	}

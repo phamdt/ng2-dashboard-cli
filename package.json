@@ -16,6 +16,8 @@
   "homepage": "https://github.com/dinesh36/ng2-dashboard-generator",
   "main": "app/index.js",
   "dependencies": {
+    "chalk": "^2.1.0",
+    "lodash": "^4.17.4",
     "underscore.string": "^3.3.4",
     "yeoman-generator": "^1.0.0"
   }

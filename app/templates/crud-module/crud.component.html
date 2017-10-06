@@ -1,13 +1,13 @@
 <nb-card>
 	<nb-card-header>
-		<%=CrudsModuleName%>
+		<%=moduleNamePlural%>
 	</nb-card-header>
 
 	<nb-card-body>
 		<ng2-smart-table [settings]="settings" [source]="source"
-						 (deleteConfirm)="delete<%=CrudModuleName%>($event)"
-						 (createConfirm)="create<%=CrudModuleName%>($event)"
-						 (editConfirm)="update<%=CrudModuleName%>($event)">
+						 (deleteConfirm)="delete<%=ModuleNameSingular%>($event)"
+						 (createConfirm)="create<%=ModuleNameSingular%>($event)"
+						 (editConfirm)="update<%=ModuleNameSingular%>($event)">
 		</ng2-smart-table>
 	</nb-card-body>
 </nb-card>

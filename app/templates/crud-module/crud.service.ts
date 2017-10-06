@@ -5,34 +5,34 @@ import {Injectable} from "@angular/core";
 import {DataService} from "../../../@core/data/data.service";
 
 @Injectable()
-export class <%=CrudModuleName%>Service{
+export class <%=ModuleNameSingular%>Service{
 	constructor(private dataService:DataService){
 
 	}
 
-	get<%=CrudsModuleName%>(){
-		return this.dataService.callAPI({url:'/api/<%=crudsModuleName%>'});
+	get<%=ModuleNamePlural%>(){
+		return this.dataService.callAPI({url:'/api/<%=moduleNamePlural%>'});
 	}
 
-	create<%=CrudModuleName%>(body){
+	create<%=ModuleNameSingular%>(body){
 		return this.dataService.callAPI({
-			url:'/api/<%=crudsModuleName%>',
+			url:'/api/<%=moduleNamePlural%>',
 			method:'post',
 			body:body
 		});
 	}
 
-	update<%=CrudModuleName%>(body){
+	update<%=ModuleNameSingular%>(body){
 		return this.dataService.callAPI({
-			url:'/api/<%=crudsModuleName%>/'+body.id,
+			url:'/api/<%=moduleNamePlural%>/'+body.id,
 			method:'put',
 			body:body
 		});
 	}
 
-	delete<%=CrudModuleName%>(id){
+	delete<%=ModuleNameSingular%>(id){
 		return this.dataService.callAPI({
-			url:'/api/<%=crudsModuleName%>/'+id,
+			url:'/api/<%=moduleNamePlural%>/'+id,
 			method:'delete'
 		});
 	}
