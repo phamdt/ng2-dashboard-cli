@@ -7,12 +7,11 @@ Install `yo`,`angular-cli` and dashboard genertor `generator-ng2-dashboard-gener
 npm install -g yo angular-cli generator-ng2-dashboard-generator
 ```
 
-Make a new directory, and `cd` into it:
-```
-mkdir my-new-project && cd $_
-```
+Clone the github project https://github.com/akveo/ngx-admin , go to that project and run the following command
 
 Run `yo ng2-dashboard-generator`, optionally passing an app name:
 ```
-yo ng2-dashboard-generator [app-name]
+yo ng2-dashboard-generator [module-name].json
 ```
+
+Here JSON file will contain the attributes of that model.
