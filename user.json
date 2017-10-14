@@ -1,0 +1,25 @@
+{
+  "request": {
+    "urlPath": "/some/resource/path",
+    "method": "ANY",
+    "headers": {
+      "Accept": {
+        "contains": "json"
+      }
+    }
+  },
+  "response": {
+    "status": 200,
+    "data": [{
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "userName":"User Name",
+      "email":"email@email.com",
+      "age":"22"
+    }
+    ],
+    "metadata": {
+      "resource": "Resource Name"
+    }
+  }
+}
