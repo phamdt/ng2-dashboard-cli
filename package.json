@@ -1,6 +1,6 @@
 {
   "name": "generator-ng2-dashboard-generator",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "yeoman generators for creating ng2 dashboards and components",
   "files": [
     "app",
