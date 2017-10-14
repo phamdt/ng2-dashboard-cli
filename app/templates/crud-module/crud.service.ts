@@ -6,12 +6,10 @@ import {DataService} from "../data.service";
 
 @Injectable()
 export class <%=ModuleNameSingular%>Service{
-	constructor(private dataService:DataService){
+	constructor(private dataService:DataService){}
 
-	}
-
-	get<%=ModuleNamePlural%>(){
-		return this.dataService.callAPI({url:'/api/<%=moduleNamePlural%>'});
+	get<%=ModuleNamePlural%>(searchQuery={}){
+		return this.dataService.callAPI({url:'/api/<%=moduleNamePlural%>',search : searchQuery});
 	}
 
 	create<%=ModuleNameSingular%>(body){

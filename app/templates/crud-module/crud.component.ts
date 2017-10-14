@@ -1,8 +1,12 @@
-import { Component } from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import { LocalDataSource } from 'ng2-smart-table';
-
-import { SmartTableService } from '../../../@core/data/smart-table.service';
 import {<%=ModuleNameSingular%>Service} from "./<%=moduleNameSingular%>.service";
+import {Observable, Subject} from "rxjs/Rx";
+import 'rxjs/add/operator/catch';
+import 'rxjs/add/operator/debounceTime';
+import 'rxjs/add/operator/distinctUntilChanged';
+import {TablePagingComponent} from "../table-paging.component";
+
 
 @Component({
 	selector: 'ngx-smart-table',
@@ -13,8 +17,14 @@ import {<%=ModuleNameSingular%>Service} from "./<%=moduleNameSingular%>.service"
     }
   `],
 })
-export class <%=ModuleNameSingular%>Component {
-
+export class <%=ModuleNameSingular%>Component implements OnInit{
+	private filterTerms = [];
+	private rowsPerPage = 10;
+	@ViewChild(TablePagingComponent) pagingComponent: TablePagingComponent;
+	pageData:any = {
+		totalPages:0,
+		currentPage:1
+	};
 	settings = {
 		add: {
 			addButtonContent: '<i class="nb-plus"></i>',
@@ -34,16 +44,55 @@ export class <%=ModuleNameSingular%>Component {
 		},
 		columns: <%-fields%>,
 	};
-
+	searchQuery:any = {};
 	source: LocalDataSource = new LocalDataSource();
+	pendingRequest:any;
 
-	constructor(private service: SmartTableService,private <%=moduleNameSingular%>Service:<%=ModuleNameSingular%>Service) {
+	constructor(private <%=moduleNameSingular%>Service:<%=ModuleNameSingular%>Service) {
 		this.getData();
 	}
 
+	ngOnInit(){
+		//wait to render the filter inputs
+		setTimeout(()=>{
+			let index = 0;
+			for (let key in this.settings.columns){
+				let i = index;
+				this.filterTerms.push(new Subject<string>());
+				Observable.fromEvent(document.getElementsByTagName('input-filter')[index], 'keyup')
+					.subscribe((event:any)=>{
+						this.filterTerms[i].next(event.target.value);
+					});
+				this.filterTerms[i]
+					.debounceTime(300) //wait for 300 for next call
+					.distinctUntilChanged() // do not call if data is unchanged
+					.subscribe(term => {
+						if(!term){
+							delete this.searchQuery[key]; //remove the search from query string
+						} else {
+							this.searchQuery[key] = term; //add term in search string
+						}
+						this.getData();
+					});
+				index++;
+			}
+		},2000);
+	}
+
 	getData(){
-		this.<%=moduleNameSingular%>Service.get<%=ModuleNamePlural%>()
-			.subscribe((<%=moduleNamePlural%>)=>this.source.load(<%=moduleNamePlural%>.rows))
+		if(this.pendingRequest){
+			this.pendingRequest.unsubscribe();
+			this.pendingRequest = false;
+		}
+		this.searchQuery.page = this.pageData.currentPage;
+		this.searchQuery.rows = this.rowsPerPage;
+		this.pendingRequest = this.<%=moduleNameSingular%>Service.get<%=ModuleNamePlural%>(this.searchQuery)
+			.subscribe((<%=moduleNamePlural%>)=>{
+				this.source.load(<%=moduleNamePlural%>.rows);
+				this.pageData.totalPages = Math.ceil(<%=moduleNamePlural%>.count/this.rowsPerPage);
+				this.pendingRequest = false;
+				this.pagingComponent.renderPages();
+			});
 	}
 
 	delete<%=ModuleNameSingular%>(event){

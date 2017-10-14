@@ -9,24 +9,34 @@ module.exports = class extends Generator {
 	constructor(args, opts) {
 		// Calling the super constructor is important so our generator is correctly set up
 		super(args, opts);
-		this.argument('jsonFileName', { type: String, required: false });
-		this.jsonFileName = this.options.jsonFileName || '';
-		this.moduleName = this.jsonFileName.replace('.json','');
-		this.moduleName = s.camelize(s.slugify(s.humanize(this.moduleName)));
+		this.argument('jsonFileNames', { type: String, required: false });
+		this.jsonFileNames = this.options.jsonFileNames || '';
+		this.jsonFileNames = this.jsonFileNames.split(',');
 	}
-	_validateJSON(){
+
+	createCrudModules(){
+		if(!this.jsonFileNames.length){
+			console.log(chalk.bold.red('Please provide json file.'));
+		} else {
+			this.jsonFileNames.forEach((jsonFileName)=>{
+				let moduleName = jsonFileName.replace('.json','');
+				moduleName = s.camelize(s.slugify(s.humanize(moduleName)));
+				this._createCrudModule(moduleName,jsonFileName);
+			})
+		}
 	}
-	createIndex() {
+
+	_createCrudModule(moduleName,jsonFileName){
 		//validate file
-		if(!this.moduleName){
+		if(!moduleName){
 			console.log(chalk.bold.red('Please provide module name.'));
 			return;
 		}
-		if(!this.fs.exists(this.jsonFileName)){
-			console.log(chalk.bold.red('JSON file does not exist.'));
+		if(!this.fs.exists(jsonFileName)){
+			console.log(chalk.bold.red(`${jsonFileName} file does not exist.`));
 			return;
 		}
-		let jsonContent = this.fs.readJSON(this.jsonFileName);
+		let jsonContent = this.fs.readJSON(jsonFileName);
 		if(!_.get(jsonContent,'response.data.length')){
 			console.log(chalk.bold.red('Please provide valid JSON file.'));
 			return;
@@ -43,11 +53,12 @@ module.exports = class extends Generator {
 		fields = _.replace(fields,new RegExp('\n','g'),"\n\t\t");
 
 		//Add component file
-		let moduleNameSingular = this.moduleName, //singular crud name
-			moduleNamePlural = this.moduleName+'s', //plural crud name
-			ModuleNameSingular = s.capitalize(this.moduleName),   //singular crud name capital case
-			ModuleNamePlural =  s.capitalize(this.moduleName)+'s', //plural crud name capital case
+		let moduleNameSingular = moduleName, //singular crud name
+			moduleNamePlural = moduleName+'s', //plural crud name
+			ModuleNameSingular = s.capitalize(moduleName),   //singular crud name capital case
+			ModuleNamePlural =  s.capitalize(moduleName)+'s', //plural crud name capital case
 			componentName = ModuleNameSingular+'Component',
+			serviceName =  ModuleNameSingular+'Service',
 			replaceVariables ={ ModuleNameSingular,ModuleNamePlural ,moduleNamePlural,moduleNameSingular,fields},
 			componentHtml = `${moduleNamePlural}/${moduleNameSingular}.component.html`,
 			componentTs = `${moduleNamePlural}/${moduleNameSingular}.component.ts`,
@@ -67,12 +78,22 @@ module.exports = class extends Generator {
 			this.destinationPath(`src/app/pages/tables/${componentService}`),
 			replaceVariables
 		);
+		this.fs.copyTpl(
+			this.templatePath('table-paging.component.ts'),
+			this.destinationPath(`src/app/pages/tables/table-paging.component.ts`),
+			replaceVariables
+		);
 
 		//update the file entries in the table-routing.module.ts file
 		let moduleFileContent  = this.fs.read(this.destinationPath(`src/app/pages/tables/tables-routing.module.ts`)),
 			lastImportStatementIndex = moduleFileContent.lastIndexOf('import '),
 			nextNewLineAfterImport = moduleFileContent.indexOf('\n',lastImportStatementIndex),
-			importStatements = '\nimport "./'+componentTs.replace('.ts','') + '";\n' + 'import "./'+componentService.replace('.ts','')+'";';
+			importStatements = '\nimport { ' +componentName +' } from "./'+componentTs.replace('.ts','') + '";\n' + 'import {'+serviceName+'} from "./'+componentService.replace('.ts','')+'";',
+			hasTablePagingComponent = true;
+		if(moduleFileContent.indexOf('TablePagingComponent')===-1){ //add the table paging component if not added
+			importStatements = '\nimport {TablePagingComponent} from \'./table-paging.component\';\n'+ importStatements;
+			hasTablePagingComponent = false;
+		}
 		//add the import statements
 		moduleFileContent = s.insert(moduleFileContent,nextNewLineAfterImport,importStatements);
 
@@ -90,7 +111,11 @@ module.exports = class extends Generator {
 
 		//add the route component that to be imported
 		let tablesComponentIndex = moduleFileContent.lastIndexOf('TablesComponent,');
+		if(!hasTablePagingComponent){ //add the table paging component if not added
+			moduleFileContent = s.insert(moduleFileContent,tablesComponentIndex+16,'\n  TablePagingComponent,');
+		}
 		moduleFileContent = s.insert(moduleFileContent,tablesComponentIndex+16,'\n  '+componentName+',');
+
 		
 		//add the providers 
 		let providersIndex = moduleFileContent.indexOf('providers:');
@@ -107,7 +132,7 @@ module.exports = class extends Generator {
 			//add the import statements for the data service
 			lastImportStatementIndex = moduleFileContent.lastIndexOf('import ');
 			nextNewLineAfterImport = moduleFileContent.indexOf('\n',lastImportStatementIndex);
-			importStatements = '\nimport "./data.service";';
+			importStatements = '\nimport {DataService} from "./data.service";';
 			moduleFileContent = s.insert(moduleFileContent,nextNewLineAfterImport,importStatements);
 			this.fs.copyTpl(
 				this.templatePath('data.service.ts'),
