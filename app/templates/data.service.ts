@@ -22,7 +22,7 @@ export class DataService {
     let url = '/api'+options.url;
     return Observable.create((subscriber) => {
       this.http
-        .request(options.url, <RequestOptionsArgs>{
+        .request(url, <RequestOptionsArgs>{
           body: options.body,
           method :(options.method || 'get'),
           header: this.headers,
