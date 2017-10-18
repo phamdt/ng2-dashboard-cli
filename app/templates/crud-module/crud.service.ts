@@ -9,12 +9,12 @@ export class <%=ModuleNameSingular%>Service{
 	constructor(private dataService:DataService){}
 
 	get<%=ModuleNamePlural%>(searchQuery={}){
-		return this.dataService.callAPI({url:'/api/<%=moduleNamePlural%>',search : searchQuery});
+		return this.dataService.callAPI({url:'/<%=moduleNamePlural%>',search : searchQuery});
 	}
 
 	create<%=ModuleNameSingular%>(body){
 		return this.dataService.callAPI({
-			url:'/api/<%=moduleNamePlural%>',
+			url:'/<%=moduleNamePlural%>',
 			method:'post',
 			body:body
 		});
@@ -22,7 +22,7 @@ export class <%=ModuleNameSingular%>Service{
 
 	update<%=ModuleNameSingular%>(body){
 		return this.dataService.callAPI({
-			url:'/api/<%=moduleNamePlural%>/'+body.id,
+			url:'/<%=moduleNamePlural%>/'+body.id,
 			method:'put',
 			body:body
 		});
@@ -30,7 +30,7 @@ export class <%=ModuleNameSingular%>Service{
 
 	delete<%=ModuleNameSingular%>(id){
 		return this.dataService.callAPI({
-			url:'/api/<%=moduleNamePlural%>/'+id,
+			url:'/<%=moduleNamePlural%>/'+id,
 			method:'delete'
 		});
 	}
