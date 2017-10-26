@@ -1,7 +1,10 @@
 let Generator = require('yeoman-generator'),
 	s = require('underscore.string'),
 	_ = require('lodash'),
-	chalk = require('chalk');
+	path = require('path'),
+	chalk = require('chalk'),
+	fs = require('fs'),
+	mockFolderName = 'mocks';
 
 
 module.exports = class extends Generator {
@@ -11,7 +14,21 @@ module.exports = class extends Generator {
 		super(args, opts);
 		this.argument('jsonFileNames', { type: String, required: false });
 		this.jsonFileNames = this.options.jsonFileNames || '';
-		this.jsonFileNames = this.jsonFileNames.split(',');
+		this.isFromMockFolder = false;
+		if(!this.jsonFileNames || this.jsonFileNames==mockFolderName || this.jsonFileNames=='./'+mockFolderName){
+			let mockFolder = this.destinationPath('./'+mockFolderName);
+			this.jsonFileNames = [];
+			if(fs.existsSync(mockFolder)){
+				console.log(chalk.bold.yellow('Looking for mocks folder for json files...'));
+				fs.readdirSync(mockFolder).forEach(file => {
+					if(file.endsWith('.json')){
+						this.jsonFileNames.push(mockFolderName+'/'+file);
+					}
+				});
+			}
+		} else {
+			this.jsonFileNames = this.jsonFileNames.split(',');
+		}
 	}
 
 	createCrudModules(){
@@ -19,8 +36,9 @@ module.exports = class extends Generator {
 			console.log(chalk.bold.red('Please provide json file.'));
 		} else {
 			this.jsonFileNames.forEach((jsonFileName)=>{
-				let moduleName = jsonFileName.replace('.json','');
+				let moduleName = jsonFileName.replace('.json','').replace(mockFolderName+'/','');
 				moduleName = s.camelize(s.slugify(s.humanize(moduleName)));
+				console.log(chalk.bold.yellow('Processing json file '+jsonFileName+' ...'));
 				this._createCrudModule(moduleName,jsonFileName);
 			})
 		}
@@ -44,6 +62,10 @@ module.exports = class extends Generator {
 		let fields = _.get(jsonContent,'response.data[0]');
 		if(!_.isPlainObject(fields)){
 			console.log(chalk.bold.red('Please provide valid JSON file.'));
+			return;
+		}
+		if(fs.existsSync(this.destinationPath('src/app/pages/tables/'+moduleName+'s'))){
+			console.log(chalk.bold.red('Module already exists.'));
 			return;
 		}
 		let fieldKeys = _.keys(fields);
@@ -148,6 +170,5 @@ module.exports = class extends Generator {
 			this.destinationPath(`src/app/pages/tables/tables-routing.module.ts`),
 			moduleFileContent
 		);
-		console.log(moduleFileContent);
 	}
 };

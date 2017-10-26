@@ -19,7 +19,7 @@ export class DataService {
     for(var key in options.search){
       searchParams.set(key,options.search[key]);
     }
-    let url = '/api'+options.url;
+    let url = options.url; //You can add your server url or url prefix here
     return Observable.create((subscriber) => {
       this.http
         .request(url, <RequestOptionsArgs>{
