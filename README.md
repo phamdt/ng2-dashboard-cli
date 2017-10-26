@@ -19,6 +19,11 @@ Run `yo ng2-dashboard-generator` passing more than one value with comma separato
 yo ng2-dashboard-generator [module-name].json,[module-name2].json
 ```
 
+Run `yo ng2-dashboard-generator` will looks for the `mocks` folder for reading multiple json files
+```
+yo ng2-dashboard-generator
+```
+
 [Here](user.json) is the sample for adding the crud operation
 
 [Here](https://github.com/dinesh36/test-api-server) is the API serer to get the data for the sample json file.
