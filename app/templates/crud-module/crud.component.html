@@ -1,0 +1,14 @@
+<nb-card>
+	<nb-card-header>
+		Users
+	</nb-card-header>
+
+	<nb-card-body>
+		<ng2-smart-table [settings]="settings" [source]="source"
+						 (deleteConfirm)="deleteUser($event)"
+						 (createConfirm)="createUser($event)"
+						 (editConfirm)="updateUser($event)">
+		</ng2-smart-table>
+		<table-paging [pageData]="pageData" (pageChanged)="getData()"></table-paging>
+	</nb-card-body>
+</nb-card>
